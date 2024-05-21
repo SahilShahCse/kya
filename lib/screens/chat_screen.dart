@@ -37,8 +37,8 @@ class ChatScreen extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             color: message.senderId == messageProvider.userId
-                                ? Colors.blueGrey[700]
-                                : Colors.teal[700],
+                                ? Color(0xff3a1726)
+                                : Color(0xff3a1726),
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(15),
                               topRight: Radius.circular(15),
@@ -87,6 +87,7 @@ class ChatScreen extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15.0),
                         child: TextField(
+                          style: TextStyle(color: Colors.white70),
                           controller: _controller,
                           decoration: InputDecoration(
                             hintText: 'Let\'s Chat',

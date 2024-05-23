@@ -5,16 +5,16 @@ import '../provider/message_provider.dart';
 
 class ChatScreen extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  final FocusNode _focusNode = FocusNode();
 
   ChatScreen({super.key});
-
-  ScrollController _scrollController = ScrollController();
 
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
     }
@@ -55,7 +55,7 @@ class ChatScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0),
           child: TextField(
-
+            focusNode: _focusNode,
             autocorrect: false,
             style: const TextStyle(color: Colors.white70),
             controller: _controller,
@@ -69,6 +69,7 @@ class ChatScreen extends StatelessWidget {
               ),
               border: InputBorder.none,
             ),
+            onTap: _scrollToBottom,
           ),
         ),
       ),
@@ -91,6 +92,7 @@ class ChatScreen extends StatelessWidget {
             Provider.of<MessageProvider>(context, listen: false)
                 .addMessage(_controller.text);
             _controller.clear();
+            _scrollToBottom();  // Ensure it scrolls to bottom after sending a message
           }
         },
       ),
@@ -101,7 +103,7 @@ class ChatScreen extends StatelessWidget {
     return Expanded(
       child: Consumer<MessageProvider>(
         builder: (context, messageProvider, child) {
-          _scrollToBottom();
+          WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
           return ListView.builder(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             controller: _scrollController,
@@ -123,7 +125,9 @@ class ChatScreen extends StatelessWidget {
           ? Alignment.centerRight
           : Alignment.centerLeft,
       child: Column(
-        crossAxisAlignment: message.senderId == messageProvider.userId ? CrossAxisAlignment.end : CrossAxisAlignment.start ,
+        crossAxisAlignment: message.senderId == messageProvider.userId
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
         children: [
           Container(
             decoration: BoxDecoration(
@@ -152,14 +156,17 @@ class ChatScreen extends StatelessWidget {
                   message.text,
                   style: const TextStyle(color: Colors.white70),
                 ),
-
               ],
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Text(
-              message.timestamp.toString().substring(0, 16).replaceAll('-', '/').replaceAll(' ', '  '),
+              message.timestamp
+                  .toString()
+                  .substring(0, 16)
+                  .replaceAll('-', '/')
+                  .replaceAll(' ', '  '),
               textAlign: TextAlign.end,
               style: const TextStyle(
                 color: Colors.teal,

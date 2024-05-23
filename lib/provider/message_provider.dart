@@ -7,7 +7,7 @@ import '../models/message_model.dart';
 
 class MessageProvider with ChangeNotifier {
 
-  final String _userId = '1111';
+  final String _userId = '0000';
   List<Message> _messages = [];
 
   late StreamSubscription<QuerySnapshot> _messagesSubscription;
@@ -59,4 +59,3 @@ class MessageProvider with ChangeNotifier {
 }
 
 
-// 8:45
